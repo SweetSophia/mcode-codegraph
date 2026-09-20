@@ -61,11 +61,15 @@ def main() -> None:
     ), "MiniMax marketplace submission link missing from SUBMISSION.md"
 
     # no file in the package is executable (matches the marketplace rule:
-    # no install script, executable, or symlink in the package)
+    # no install script, executable, or symlink in the package). Skip .git/,
+    # which the local checkout adds and which is outside the deliverable.
     execute_mask = stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
     for path in ROOT.rglob("*"):
-        if path.is_file():
-            assert not (path.stat().st_mode & execute_mask), path
+        if not path.is_file():
+            continue
+        if ".git" in path.relative_to(ROOT).parts:
+            continue
+        assert not (path.stat().st_mode & execute_mask), path
 
     print("minimax plugin package: PASS")
 
