@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "name": "mcode-codegraph",
+  "displayName": "CodeGraph for MiniMax Code",
+  "version": "0.1.0",
+  "description": "Pre-indexed code knowledge graph for MiniMax Code. Run `codegraph init` in a project, then the agent answers structural questions from a single MCP call instead of grep+read loops.",
+  "author": "SweetSophia",
+  "homepage": "https://github.com/SweetSophia/mcode-codegraph",
+  "icon": "icon.png",
+  "category": "Code",
+  "exampleQueries": [
+    "How does the ingest endpoint flow from the CLI poller to the broadcaster?",
+    "Find every caller of applyAgentSnapshot in this repo.",
+    "What symbols does GameEngine.update reach from inside updateCharacter?"
+  ],
+  "apps": [],
+  "mcpServers": [
+    "codegraph.mcp.json"
+  ],
+  "skills": [
+    "skills/codegraph-mcode/SKILL.md"
+  ]
+}

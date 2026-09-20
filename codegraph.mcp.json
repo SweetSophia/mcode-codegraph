@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "mcpServers": {
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": [
+        "serve",
+        "--mcp"
+      ],
+      "env": {},
+      "description": "CodeGraph MCP server — pre-indexed knowledge graph of the current project's source tree. One call returns the relevant symbols' verbatim source, the call paths between them, and a blast-radius summary.",
+      "timeout": 90000
+    }
+  }
+}
