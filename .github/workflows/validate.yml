@@ -1,0 +1,70 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  plugin-package:
+    name: Plugin package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run plugin-package validator
+        run: python3 tests/test_minimax_plugin.py
+
+  package-shape:
+    name: Package shape
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate JSON files and icon
+        run: |
+          python3 -c "
+          import json, os, stat, sys
+          ok = True
+
+          for path in ['.minimax-plugin/plugin.json', 'codegraph.mcp.json']:
+              try:
+                  json.load(open(path))
+                  print(f'{path}: ok')
+              except Exception as e:
+                  print(f'{path}: FAIL ({e})', file=sys.stderr)
+                  ok = False
+
+          head = open('icon.png','rb').read(8)
+          if not head.startswith(b'\x89PNG\r\n\x1a\n'):
+              print('icon.png: not a valid PNG', file=sys.stderr)
+              ok = False
+          else:
+              print('icon.png: ok')
+
+          bad = []
+          for root, _, files in os.walk('.'):
+              if '.git' in root.split(os.sep):
+                  continue
+              for f in files:
+                  p = os.path.join(root, f)
+                  if os.stat(p).st_mode & (stat.S_IXUSR|stat.S_IXGRP|stat.S_IXOTH):
+                      bad.append(p)
+          if bad:
+              print(f'executable files found: {bad}', file=sys.stderr)
+              ok = False
+          else:
+              print('no executables: ok')
+
+          sys.exit(0 if ok else 1)
+          "
